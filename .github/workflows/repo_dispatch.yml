@@ -1,0 +1,18 @@
+name: Trigger GitHub automation
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  notify_private_repo:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Repository Dispatch
+        uses: peter-evans/repository-dispatch@v1
+        with:
+          token: ${{ secrets.MY_PAT }}
+          repository: ${{ secrets.DB_AUTOMATION_REPO }}
+          event-type: notify-event
+          client-payload: '{"repo": "${{github.event.repository.name}}", "owner": "${{github.event.repository.owner.name}}", "commits": ${{ toJson(github.event.commits) }}}'
